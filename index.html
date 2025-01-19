@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AetherBlock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Splash Screens */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+            z-index: 1000;
+        }
+
+        .splash-text {
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-in-out;
+        }
+
+        .splash-text.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .splash-screen.fade-out {
+            opacity: 0;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active .line1 {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active .line2 {
+            opacity: 0;
+        }
+
+        .hamburger.active .line3 {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            padding-top: 60px;
+            transition: 0.3s;
+            z-index: 99;
+        }
+
+        .nav-menu.active {
+            right: 0;
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            min-height: 100vh;
+            display: none;
+            padding: 80px 20px;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+        }
+
+        .main-content.active {
+            display: block;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Card Slider */
+        .card-slider {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cards-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .card {
+            min-width: 300px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Arrow Controls */
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .slider-arrow:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .slider-arrow svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: white;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .arrow-prev {
+            left: 10px;
+        }
+
+        .arrow-next {
+            right: 10px;
+        }
+
+        /* Call to Action Card */
+        .card.cta {
+            background: linear-gradient(135deg, #00a8ff, #0097e6);
+            border: 2px solid #fff;
+        }
+
+        .card.cta:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 168, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screens -->
+    <div id="splash1" class="splash-screen">
+        <div class="splash-text">AetherBlock</div>
+    </div>
+    
+    <div id="splash2" class="splash-screen" style="display: none;">
+        <div class="splash-text">Decentralizing Sight<br>Empowering Lives</div>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger">
+        <div class="line1"></div>
+        <div class="line2"></div>
+        <div class="line3"></div>
+    </div>
+
+    <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="card-slider">
+            <!-- Arrow Controls -->
+            <div class="slider-arrow arrow-prev" onclick="slideCards('prev')">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </div>
+            <div class="slider-arrow arrow-next" onclick="slideCards('next')">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </div>
+
+            <div class="cards-container">
+                <div class="card" onclick="window.location.href='vision.html'">
+                    <h2>Vision Technology</h2>
+                    <p>Explore our cutting-edge vision enhancement solutions</p>
+                </div>
+                <div class="card" onclick="window.location.href='blockchain.html'">
+                    <h2>Blockchain Innovation</h2>
+                    <p>Discover how we're using blockchain to transform healthcare</p>
+                </div>
+                <div class="card" onclick="window.location.href='research.html'">
+                    <h2>Research & Development</h2>
+                    <p>Learn about our latest breakthrough technologies</p>
+                </div>
+                <div class="card" onclick="window.location.href='community.html'">
+                    <h2>Community Impact</h2>
+                    <p>See how we're making a difference in lives worldwide</p>
+                </div>
+                <div class="card" onclick="window.location.href='partners.html'">
+                    <h2>Partners & Collaborations</h2>
+                    <p>Join our growing network of healthcare innovators</p>
+                </div>
+                <div class="card cta" onclick="window.location.href='register.html'">
+                    <h2>Get Your Vision Decentralized Now</h2>
+                    <p>Take the first step towards enhanced vision today</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Text-to-Speech functionality
+        const speechSynthesis = window.speechSynthesis;
+        
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
+        }
+
+        function readPageContent() {
+            // Read splash screens
+            speak("Welcome to AetherBlock");
+            speak("Decentralizing Sight, Empowering Lives");
+
+            // Read cards content
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.querySelector('h2').textContent;
+                const description = card.querySelector('p').textContent;
+                speak(`${title}. ${description}`);
+            });
+        }
+
+        // Splash Screen Animation
+        async function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function playSplashScreens() {
+            const splash1 = document.getElementById('splash1');
+            const text1 = splash1.querySelector('.splash-text');
+            
+            text1.classList.add('active');
+            await sleep(2000);
+            text1.classList.remove('active');
+            splash1.classList.add('fade-out');
+            await sleep(1000);
+            
+            splash1.style.display = 'none';
+            const splash2 = document.getElementById('splash2');
+            splash2.style.display = 'flex';
+            const text2 = splash2.querySelector('.splash-text');
+            
+            await sleep(100);
+            text2.classList.add('active');
+            await sleep(2000);
+            text2.classList.remove('active');
+            splash2.classList.add('fade-out');
+            await sleep(1000);
+            
+            splash2.style.display = 'none';
+            document.querySelector('.main-content').classList.add('active');
+            
+            // Start reading content after splash screens
+            readPageContent();
+        }
+
+        // Hamburger Menu
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Card Slider
+        let currentPosition = 0;
+        const cardWidth = 320; // card width + gap
+        const container = document.querySelector('.cards-container');
+        const cards = document.querySelectorAll('.card');
+        const maxPosition = -(cards.length * cardWidth - document.querySelector('.card-slider').offsetWidth);
+
+        function slideCards(direction) {
+            if (direction === 'next' && currentPosition > maxPosition) {
+                currentPosition -= cardWidth;
+            } else if (direction === 'prev' && currentPosition < 0) {
+                currentPosition += cardWidth;
+            }
+            
+            container.style.transform = `translateX(${currentPosition}px)`;
+        }
+    
+        window.addEventListener('load', playSplashScreens);
+    </script>
+</body>
+</html>
